@@ -1,8 +1,10 @@
 #include "game.h"
 
 #include "tile.h"
+#include <fstream>
 
 using namespace maths;
+using namespace std;
 
 GLuint vao, vbo;
 
@@ -124,6 +126,11 @@ void Game::update()
             m_world->getChunkFromTile(x, y)->generateChunk();
             m_world->getChunkFromTile(x, y)->generateBuffers();
         }
+    }
+
+    if(m_input->getKeyDown(KEY_P))
+    {
+        
     }
 }
 
