@@ -131,3 +131,10 @@ int World::getTypeTile(std::string name)
     }
     return 0;
 }
+
+int World::getTile(int i)
+{
+    if(i < 0 || i >= tilestype.size()) return 0;
+
+    return tilestype[i];
+}

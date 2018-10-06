@@ -24,7 +24,7 @@ void Camera::update(Player *player)
 {
     if(m_window->wasResized())
     {
-        //m_projection = mat4::orthographic(m_window->getWidth(), 0, 0, m_window->getHeight(), m_znear, m_zfar);
+        m_projection = mat4::orthographic(m_window->getWidth(), 0, 0, m_window->getHeight(), m_znear, m_zfar);
         glViewport(0, 0, m_window->getWidth(), m_window->getHeight());
     }
 

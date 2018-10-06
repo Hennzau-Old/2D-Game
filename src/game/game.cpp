@@ -19,7 +19,7 @@ int p = 0;
 
 Game::Game()
 {
-    m_window = new Window("MyPrettyGame", 1280, 720);
+    m_window = new Window("MyPrettyGame", WIDTH, HEIGHT);
     m_mainShader = new Shader("res/shaders/main.vert", "res/shaders/main.frag");
 
     m_input = new Input(m_window);
@@ -27,6 +27,7 @@ Game::Game()
     m_camera = new Camera(m_input, m_window);
     m_world = new World();
     m_player = new Player(m_input, m_world);
+    m_inventory = new Inventory(m_world);
 
     texture = new Texture("res/textures/textures.png", GL_RGB);
 
@@ -76,18 +77,13 @@ void Game::update()
     m_player->update();
     m_camera->update(m_player);
     m_world->update();
+    m_inventory->update();
 
     if(m_input->getKeyDown(KEY_F))
         line = !line;
 
     int x = m_input->getX() / TILE_SIZE;
     int y = m_input->getY() / TILE_SIZE;
-
-    if(m_input->getKeyDown(KEY_UP)) n++;
-    if(m_input->getKeyDown(KEY_DOWN)) n--;
-
-    if(n < 0) n = 0;
-    if(n > m_world->tilestype.size() - 1) n = m_world->tilestype.size() - 1;
 
     if(m_input->getButtonDown(2))
     {
@@ -105,20 +101,6 @@ void Game::update()
         }
     }
 
-    if(n != last_n)
-    {
-        last_n = n;
-
-        p = m_world->tilestype[(int) n];
-        Tile::addTile(&m_vertices, m_window->getWidth() - TILE_SIZE * 2, m_window->getHeight() - TILE_SIZE * 2, 2, 2, maths::vec3::unpack(p), 16, 16);
-
-        glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, m_vertices.size() * sizeof(float), &m_vertices[0]);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-        m_vertices.clear();
-    }
-
     if(m_input->getButton(1))
     {
         if(m_world->setTile(x, y, p) != 1)
@@ -128,9 +110,9 @@ void Game::update()
         }
     }
 
-    if(m_input->getKeyDown(KEY_P))
+    if(m_input->getKeyDown(KEY_E))
     {
-        
+        m_inventory->setVisible(!m_inventory->isVisible());
     }
 }
 
@@ -144,6 +126,7 @@ void Game::render()
     m_window->clearBuffers();
 
     glDisable(GL_DEPTH_TEST);
+
     m_mainShader->bind();
     m_mainShader->setUniform("projection", m_camera->getProjectionMatrix());
     m_mainShader->setUniform("view", m_camera->getViewMatrix());
@@ -163,14 +146,12 @@ void Game::render()
     m_mainShader->setUniform("model", model);
 
         texture->bind();
-            glBindVertexArray(m_vao);
-                glDrawArrays(GL_TRIANGLES, 0, 6);
-            glBindVertexArray(0);
+            m_inventory->render();
         texture->unbind();
 
     m_mainShader->unbind();
-    glEnable(GL_DEPTH_TEST);
 
+    glEnable(GL_DEPTH_TEST);
 
     m_window->update();
 }

@@ -6,6 +6,12 @@
 #include "shader.h"
 #include "texture.h"
 #include "world.h"
+#include "inventory.h"
+
+static const int WIDTH = 1280;
+static const int HEIGHT = 720;
+
+class Inventory;
 
 class Game
 {
@@ -20,6 +26,7 @@ class Game
         Input     *getInput() { return m_input; }
         Camera    *getCamera() { return m_camera; }
         Player    *getPlayer() { return m_player; }
+        Inventory *getInventory() { return m_inventory; }
 
     private:
         Window        *m_window;
@@ -28,6 +35,7 @@ class Game
         Camera        *m_camera;
         Player        *m_player;
         World         *m_world;
+        Inventory     *m_inventory;
 
         std::vector<float>    m_vertices;
 

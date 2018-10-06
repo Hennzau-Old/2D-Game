@@ -26,6 +26,7 @@ class World
 
         int             setTile(int x, int y, int tile);
         int             getTile(int x, int y);
+        int             getTile(int i);
         int             getTypeTile(std::string name);
 
         Chunk           *getChunkFromTile(int x, int y);
