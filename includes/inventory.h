@@ -13,17 +13,21 @@ class Inventory
         Inventory(World *world);
         ~Inventory();
 
-        void                  update();
+        void                  update(Input *input);
         void                  render();
 
         int                   getItem(int x, int y);
         int                   setTime(int x, int y, int item);
+        int                   getSelectedItem() { return item_selected; }
 
         void                  setVisible(bool v);
+        void                  setItem(int item);
+        
         bool                  isVisible() { return m_visible; }
 
     private:
         int                   m_verticescount = 0;
+        int                   item_selected = 0;
         int**                 m_items;
 
         bool                  m_visible = true;

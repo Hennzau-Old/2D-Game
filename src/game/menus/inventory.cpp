@@ -5,8 +5,8 @@ using namespace maths;
 int wm = 4;
 int hm = 6;
 
-int w = WIDTH / TILE_SIZE - wm;
-int h = HEIGHT / TILE_SIZE - hm;
+int w = WIDTH / (TILE_SIZE * 2) - wm;
+int h = HEIGHT / (TILE_SIZE * 2) - hm;
 
 Inventory::Inventory(World *world)
 {
@@ -40,7 +40,7 @@ Inventory::Inventory(World *world)
             if(m_items[x][y] == 0)
                 continue;
 
-            Tile::addTile(&m_vertices, y * TILE_SIZE * 2 + (wm / 2 * TILE_SIZE * 2), x * TILE_SIZE * 2 + (hm / 2 * TILE_SIZE * 2), 2, 2, vec3::unpack(m_items[x][y]), 16, 16);
+            Tile::addTile(&m_vertices, x * TILE_SIZE * 2 + (hm / 2 * TILE_SIZE * 2), y * TILE_SIZE * 2 + (wm / 2 * TILE_SIZE * 2), 2, 2, vec3::unpack(m_items[x][y]), 16, 16);
             m_verticescount += 6;
         }
     }
@@ -71,9 +71,26 @@ Inventory::~Inventory()
 
 }
 
-void Inventory::update()
+void Inventory::update(Input *input)
 {
+    if(!m_visible)
+        return;
 
+    int x = input->getX() / (TILE_SIZE * 2) - hm / 2;
+    int y = input->getY() / (TILE_SIZE * 2) - wm / 2;
+
+    if(input->getButtonDown(0))
+    {
+        if(m_items[x][y] != 0 && x >= 0 && x < w && y >= 0 && y < h)
+        {
+            item_selected = m_items[x][y];
+        }
+    }
+}
+
+void Inventory::setItem(int item)
+{
+    item_selected = item;
 }
 
 void Inventory::render()

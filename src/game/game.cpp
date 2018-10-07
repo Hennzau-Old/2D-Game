@@ -33,7 +33,7 @@ Game::Game()
 
     model = mat4::translate(0, 0, 0);
 
-    p = m_world->getTypeTile("RED_FLOWER");
+    p = m_world->getTypeTile("GRASS");
 
     Tile::addTile(&m_vertices, m_window->getWidth() - TILE_SIZE * 2, m_window->getHeight() - TILE_SIZE * 2, 2, 2, maths::vec3::unpack(p), 16, 16);
 
@@ -77,7 +77,7 @@ void Game::update()
     m_player->update();
     m_camera->update(m_player);
     m_world->update();
-    m_inventory->update();
+    m_inventory->update(m_input);
 
     if(m_input->getKeyDown(KEY_F))
         line = !line;
@@ -85,25 +85,38 @@ void Game::update()
     int x = m_input->getX() / TILE_SIZE;
     int y = m_input->getY() / TILE_SIZE;
 
+    if((p = m_inventory->getSelectedItem()) != 0)
+    {
+        Tile::addTile(&m_vertices, m_window->getWidth() - TILE_SIZE * 2, m_window->getHeight() - TILE_SIZE * 2, 2, 2, maths::vec3::unpack(p), 16, 16);
+
+        glBindVertexArray(m_vao);
+
+            glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+
+                glEnableVertexAttribArray(0);
+                glEnableVertexAttribArray(1);
+                glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(float), &m_vertices[0], GL_STATIC_DRAW);
+                glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*) 0);
+                glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*) 8);
+
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        glBindVertexArray(0);
+
+        m_vertices.clear();
+    }
+
     if(m_input->getButtonDown(2))
     {
         if(m_world->getTile(x, y) != 0)
         {
-            p = m_world->getTile(x, y);
-
-            Tile::addTile(&m_vertices, m_window->getWidth() - TILE_SIZE * 2, m_window->getHeight() - TILE_SIZE * 2, 2, 2, maths::vec3::unpack(p), 16, 16);
-
-            glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-                glBufferSubData(GL_ARRAY_BUFFER, 0, m_vertices.size() * sizeof(float), &m_vertices[0]);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-            m_vertices.clear();
+            m_inventory->setItem(m_world->getTile(x, y));
         }
     }
 
     if(m_input->getButton(1))
     {
-        if(m_world->setTile(x, y, p) != 1)
+        if(m_world->setTile(x, y, m_inventory->getSelectedItem()) != 1)
         {
             m_world->getChunkFromTile(x, y)->generateChunk();
             m_world->getChunkFromTile(x, y)->generateBuffers();
@@ -147,6 +160,9 @@ void Game::render()
 
         texture->bind();
             m_inventory->render();
+            glBindVertexArray(m_vao);
+                glDrawArrays(GL_TRIANGLES, 0, 6);
+            glBindVertexArray(0);
         texture->unbind();
 
     m_mainShader->unbind();
