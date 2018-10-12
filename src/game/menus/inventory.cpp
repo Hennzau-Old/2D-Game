@@ -2,17 +2,16 @@
 
 using namespace maths;
 
-int wm = 4;
-int hm = 6;
-
-int w = WIDTH / (TILE_SIZE * 2) - wm;
-int h = HEIGHT / (TILE_SIZE * 2) - hm;
+int w = 9;
+int h = 5;
 
 Inventory::Inventory(World *world)
 {
     m_world = world;
 
     m_items = new int*[w];
+
+    item_selected = world->getTypeTile("GRASS");
 
     for(int i = 0; i < w; i++)
     {
@@ -40,7 +39,7 @@ Inventory::Inventory(World *world)
             if(m_items[x][y] == 0)
                 continue;
 
-            Tile::addTile(&m_vertices, x * TILE_SIZE * 2 + (hm / 2 * TILE_SIZE * 2), y * TILE_SIZE * 2 + (wm / 2 * TILE_SIZE * 2), 2, 2, vec3::unpack(m_items[x][y]), 16, 16);
+            Tile::addTile(&m_vertices, x * TILE_SIZE * 2 + WIDTH / 4, y * TILE_SIZE * 2 + HEIGHT / 4, 2, 2, vec3::unpack(m_items[x][y]), 16, 16);
             m_verticescount += 6;
         }
     }
@@ -76,14 +75,18 @@ void Inventory::update(Input *input)
     if(!m_visible)
         return;
 
-    int x = input->getX() / (TILE_SIZE * 2) - hm / 2;
-    int y = input->getY() / (TILE_SIZE * 2) - wm / 2;
+    int x = (input->getX() - (WIDTH / 4)) / (TILE_SIZE * 2);
+    int y = (input->getY() - (HEIGHT / 4)) / (TILE_SIZE * 2);
 
     if(input->getButtonDown(0))
     {
-        if(m_items[x][y] != 0 && x >= 0 && x < w && y >= 0 && y < h)
+        printf("%d / %d\n", x, y);
+        if(x > 0 && y > 0 && x <= w && y <= h)
         {
-            item_selected = m_items[x][y];
+            if(m_items[x][y] != 0)
+            {
+                item_selected = m_items[x][y];
+            }
         }
     }
 }

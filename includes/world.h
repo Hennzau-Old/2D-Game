@@ -2,13 +2,13 @@
 #define WORLD
 
 #include "chunk.h"
+#include "camera.h"
 #include <vector>
 #include <iostream>
 
 const int               WORLD_SIZE = 5;
 
 class Chunk;
-
 
 class World
 {
@@ -17,7 +17,7 @@ class World
         ~World();
 
         void            update();
-        void            render();
+        void            render(Camera *camera);
 
         void            updateChunk(int x, int y);
         void            updateChunks(int x, int y);

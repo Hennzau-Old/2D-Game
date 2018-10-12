@@ -28,6 +28,12 @@ void Camera::update(Player *player)
         glViewport(0, 0, m_window->getWidth(), m_window->getHeight());
     }
 
+    int x = player->getX();
+    int y = player->getY();
+
+    m_pos.x = x - m_window->getWidth() / 2;
+    m_pos.y = y - m_window->getHeight() / 2;
+
     m_transform = Transform();
     m_transform.setPosition(vec3(m_pos.copy().negate().x, m_pos.copy().negate().y, 0));
 

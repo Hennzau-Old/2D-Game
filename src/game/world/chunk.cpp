@@ -56,6 +56,7 @@ void Chunk::createChunk()
 
 void Chunk::generateChunk()
 {
+    m_verticescount = 0;
     for(int x = 0; x < CHUNK_SIZE; x++)
     {
         for(int y = 0; y < CHUNK_SIZE; y++)
@@ -86,6 +87,21 @@ void Chunk::generateBuffers()
             glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(float), &m_vertices[0], GL_STATIC_DRAW);
             glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*) 0);
             glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*) 8);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(0);
+
+    m_vertices.clear();
+}
+
+void Chunk::updateBuffers()
+{
+    glBindVertexArray(m_vao);
+
+        glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+
+            glBufferSubData(GL_ARRAY_BUFFER, 0, m_vertices.size() * sizeof(float), &m_vertices[0]);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 

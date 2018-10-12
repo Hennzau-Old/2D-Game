@@ -1,11 +1,32 @@
 #include "game.h"
 
 using namespace maths;
+using namespace std;
 
-const int       FRAME_CAP = 120;
+const int       FRAME_CAP = 6666;
 
 int main(void)
 {
+    /*
+    const char* FILENAME = "res/a.txt";
+
+    int toRestore[4];
+    ifstream i(FILENAME, ios::binary);
+
+    i.read((char* ) &toRestore, sizeof(toRestore));
+
+    for(int i = 0; i < sizeof(toRestore); i++)
+    {
+        printf("%d\n", toRestore[i]);
+    }
+
+    int toStore[4] = {13, 6, 15, 1};
+    ofstream o(FILENAME, ios::binary);
+
+    o.write((char*) &toStore, sizeof(toStore));
+    o.close();
+    */
+
     Game    *game = new Game();
 
     double  tickTime = 1.0 / 60.0;

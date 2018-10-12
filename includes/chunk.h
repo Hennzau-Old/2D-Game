@@ -24,9 +24,13 @@ class Chunk
         void                  createChunk();
         void                  generateChunk();
         void                  generateBuffers();
+        void                  updateBuffers();
 
         int                   getTile(int x, int y);
         int                   setTile(int x, int y, int tile);
+
+        int                   getX() { return m_x; }
+        int                   getY() { return m_y; }
 
     private:
         int                   m_verticescount = 0;

@@ -82,8 +82,8 @@ void Game::update()
     if(m_input->getKeyDown(KEY_F))
         line = !line;
 
-    int x = m_input->getX() / TILE_SIZE;
-    int y = m_input->getY() / TILE_SIZE;
+    int x = (m_input->getX() + m_camera->getX()) / TILE_SIZE;
+    int y = (m_input->getY() + m_camera->getY()) / TILE_SIZE;
 
     if((p = m_inventory->getSelectedItem()) != 0)
     {
@@ -119,7 +119,7 @@ void Game::update()
         if(m_world->setTile(x, y, m_inventory->getSelectedItem()) != 1)
         {
             m_world->getChunkFromTile(x, y)->generateChunk();
-            m_world->getChunkFromTile(x, y)->generateBuffers();
+            m_world->getChunkFromTile(x, y)->updateBuffers();
         }
     }
 
@@ -146,7 +146,7 @@ void Game::render()
     m_mainShader->setUniform("model", model);
 
         texture->bind();
-            m_world->render();
+            m_world->render(m_camera);
         texture->unbind();
 
     m_mainShader->unbind();
@@ -155,7 +155,7 @@ void Game::render()
 
     m_mainShader->bind();
     m_mainShader->setUniform("projection", m_camera->getProjectionMatrix());
-    m_mainShader->setUniform("view", m_camera->getViewMatrix());
+    m_mainShader->setUniform("view", mat4::identity());
     m_mainShader->setUniform("model", model);
 
         texture->bind();

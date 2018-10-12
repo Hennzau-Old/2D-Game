@@ -1,5 +1,6 @@
 #include "world.h"
 #include "loader.h"
+#include "game.h"
 
 World::World()
 {
@@ -55,11 +56,17 @@ void World::update()
     }
 }
 
-void World::render()
+int t = CHUNK_SIZE * TILE_SIZE;
+
+void World::render(Camera *camera)
 {
     for(int i = 0; i < WORLD_SIZE * WORLD_SIZE; i++)
     {
-        m_chunks[i]->render();
+        if(m_chunks[i]->getX() * t > camera->getX() - t && m_chunks[i]->getY() * t > camera->getY() - t
+            && m_chunks[i]->getX() * t < camera->getX() + WIDTH && m_chunks[i]->getY() * t < camera->getY() + HEIGHT)
+        {
+            m_chunks[i]->render();
+        }
     }
 }
 

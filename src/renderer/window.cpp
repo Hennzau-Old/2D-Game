@@ -16,6 +16,7 @@ Window::Window(const char* title, int width, int height)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
     m_window = glfwCreateWindow(m_width, m_height, m_title, NULL, NULL);
 
@@ -25,6 +26,11 @@ Window::Window(const char* title, int width, int height)
         glfwTerminate();
         return;
     }
+
+    const GLFWvidmode *vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+    glfwSetWindowPos(m_window, (vidmode->width - m_width) / 2,
+                      (vidmode->height - m_height) / 2);
 
     glfwMakeContextCurrent(m_window);
     glewExperimental = true;
