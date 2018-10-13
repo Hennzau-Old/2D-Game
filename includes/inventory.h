@@ -22,15 +22,17 @@ class Inventory
 
         void                  setVisible(bool v);
         void                  setItem(int item);
-        
+
         bool                  isVisible() { return m_visible; }
 
     private:
         int                   m_verticescount = 0;
         int                   item_selected = 0;
         int**                 m_items;
+        int                   m_inventory_buffer_size = 0;
 
-        bool                  m_visible = true;
+
+        bool                  m_visible = false;
 
         GLuint                m_vao,
                               m_vbo;

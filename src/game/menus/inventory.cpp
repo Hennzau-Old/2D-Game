@@ -24,8 +24,10 @@ Inventory::Inventory(World *world)
     {
         for(int y = 0; y < h; y++)
         {
-            if(m_world->getTile(i) != 0) m_items[x][y] = m_world->getTile(i);
-
+            if(m_world->getTile(i) != 0)
+            {
+                m_items[x][y] = m_world->getTile(i);
+            }
             else m_items[x][y] = 0;
 
             i++;
@@ -43,6 +45,12 @@ Inventory::Inventory(World *world)
             m_verticescount += 6;
         }
     }
+
+    m_inventory_buffer_size = m_vertices.size() * sizeof(float);
+
+    Tile::addTile(&m_vertices, 0, 0, 2, 2, vec3(1, 0, 0), 16, 16);
+
+    m_verticescount += 6;
 
     glGenBuffers(1, &m_vbo);
     glGenVertexArrays(1, &m_vao);
@@ -70,6 +78,8 @@ Inventory::~Inventory()
 
 }
 
+int ni = 0;
+
 void Inventory::update(Input *input)
 {
     if(!m_visible)
@@ -80,14 +90,31 @@ void Inventory::update(Input *input)
 
     if(input->getButtonDown(0))
     {
-        printf("%d / %d\n", x, y);
-        if(x > 0 && y > 0 && x <= w && y <= h)
+        if(x >= 0 && y >= 0 && x < w && y < h)
         {
             if(m_items[x][y] != 0)
             {
                 item_selected = m_items[x][y];
             }
         }
+    }
+
+    if((ni = getSelectedItem()) != 0)
+    {
+        std::vector<float> v;
+        Tile::addTile(&v, 0, 0, 2, 2, vec3::unpack(ni), 16, 16);
+
+        glBindVertexArray(m_vao);
+
+            glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+
+                glBufferSubData(GL_ARRAY_BUFFER, m_inventory_buffer_size, v.size() * sizeof(float), &v[0]);
+
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        glBindVertexArray(0);
+
+        v.clear();
     }
 }
 

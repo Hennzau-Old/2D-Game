@@ -13,10 +13,6 @@ Texture *texture;
 
 mat4 model;
 
-int n = 0;
-int last_n = 0;
-int p = 0;
-
 Game::Game()
 {
     m_window = new Window("MyPrettyGame", WIDTH, HEIGHT);
@@ -32,29 +28,6 @@ Game::Game()
     texture = new Texture("res/textures/textures.png", GL_RGB);
 
     model = mat4::translate(0, 0, 0);
-
-    p = m_world->getTypeTile("GRASS");
-
-    Tile::addTile(&m_vertices, m_window->getWidth() - TILE_SIZE * 2, m_window->getHeight() - TILE_SIZE * 2, 2, 2, maths::vec3::unpack(p), 16, 16);
-
-    glGenBuffers(1, &m_vbo);
-    glGenVertexArrays(1, &m_vao);
-
-    glBindVertexArray(m_vao);
-
-        glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-
-            glEnableVertexAttribArray(0);
-            glEnableVertexAttribArray(1);
-            glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(float), &m_vertices[0], GL_STATIC_DRAW);
-            glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*) 0);
-            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*) 8);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(0);
-
-    m_vertices.clear();
 }
 
 bool line = false;
@@ -84,27 +57,6 @@ void Game::update()
 
     int x = (m_input->getX() + m_camera->getX()) / TILE_SIZE;
     int y = (m_input->getY() + m_camera->getY()) / TILE_SIZE;
-
-    if((p = m_inventory->getSelectedItem()) != 0)
-    {
-        Tile::addTile(&m_vertices, m_window->getWidth() - TILE_SIZE * 2, m_window->getHeight() - TILE_SIZE * 2, 2, 2, maths::vec3::unpack(p), 16, 16);
-
-        glBindVertexArray(m_vao);
-
-            glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-
-                glEnableVertexAttribArray(0);
-                glEnableVertexAttribArray(1);
-                glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(float), &m_vertices[0], GL_STATIC_DRAW);
-                glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*) 0);
-                glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*) 8);
-
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-        glBindVertexArray(0);
-
-        m_vertices.clear();
-    }
 
     if(m_input->getButtonDown(2))
     {
@@ -160,9 +112,6 @@ void Game::render()
 
         texture->bind();
             m_inventory->render();
-            glBindVertexArray(m_vao);
-                glDrawArrays(GL_TRIANGLES, 0, 6);
-            glBindVertexArray(0);
         texture->unbind();
 
     m_mainShader->unbind();

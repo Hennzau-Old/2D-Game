@@ -1,4 +1,6 @@
 #include "camera.h"
+#include "world.h"
+#include "game.h"
 
 using namespace maths;
 
@@ -31,8 +33,20 @@ void Camera::update(Player *player)
     int x = player->getX();
     int y = player->getY();
 
-    m_pos.x = x - m_window->getWidth() / 2;
-    m_pos.y = y - m_window->getHeight() / 2;
+//    m_pos.x = x - m_window->getWidth() / 2;
+//    m_pos.y = y - m_window->getHeight() / 2;
+
+    if(x >= m_pos.x + (m_window->getWidth() / 3 * 2)) m_pos.x += (player->getSpeed());
+    if(x <= m_pos.x + (m_window->getWidth() / 3)) m_pos.x -= (player->getSpeed());
+    if(y <= m_pos.y + (m_window->getHeight() / 3 * 2)) m_pos.y -= (player->getSpeed());
+    if(y >= m_pos.y + (m_window->getHeight() / 3)) m_pos.y += (player->getSpeed());
+
+    if(m_pos.x < 0) m_pos.x = 0;
+    if(m_pos.x > WORLD_SIZE * CHUNK_SIZE * TILE_SIZE - WIDTH) m_pos.x = WORLD_SIZE * CHUNK_SIZE * TILE_SIZE - WIDTH;
+
+    if(m_pos.y < 0) m_pos.y = 0;
+    if(m_pos.y > WORLD_SIZE * CHUNK_SIZE * TILE_SIZE - HEIGHT) m_pos.y = WORLD_SIZE * CHUNK_SIZE * TILE_SIZE - HEIGHT;
+
 
     m_transform = Transform();
     m_transform.setPosition(vec3(m_pos.copy().negate().x, m_pos.copy().negate().y, 0));

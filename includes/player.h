@@ -30,6 +30,7 @@ class Player
         float         getX() { return m_pos.x; }
         float         getY() { return m_pos.y; }
 
+        int           getSpeed();
 
         maths::vec2   m_pos,
                       m_rot;

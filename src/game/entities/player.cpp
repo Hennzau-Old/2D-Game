@@ -75,6 +75,11 @@ void Player::updateSprite()
     }
 }
 
+int Player::getSpeed()
+{
+    return speed;
+}
+
 void Player::update()
 {
     last_dir = dir;
